@@ -40,18 +40,26 @@ recommendations section. Never auto-enable anything.
    - `adoption-report.md` — inputs read, files updated, assumptions, conflicts/gaps, recommended next review step.
    - `.claude/project/code-intel.md` — whether the repo benefits from the `code-intel` plugin (serena+CBM+ast-grep), primary language/LSP, index state. Report-only.
 5. Use repo-relative paths only. Never encode machine-local absolute paths.
-6. **Recommend repo-specific automations (report-only).** From the detected
-   stack, append a short "Recommended automations (opt-in)" section to
-   `adoption-report.md` — top 1–2 per category, each as
-   *suggestion — why (concrete signal) — opt-in step*. Use
-   [`references/automation-catalog.md`](references/automation-catalog.md) for the
-   full detection → suggestion tables (MCP servers, hooks, subagents, language
-   servers, custom skills), distilled from Anthropic's
-   `claude-automation-recommender`. It is **gap-aware** — the harness already
-   ships a baseline (block/bd-prime hooks; `code-reviewer`, `docs-researcher`,
-   `planner`, `spec-reviewer` agents; beads; bundled `codex-adapter`), so only
-   recommend what that baseline does not already cover. Never create or enable
-   anything — enablement is the user's trust decision.
+6. **Recommend repo-specific automations (report-only).** Modeled on Anthropic's
+   `claude-automation-recommender`: from the detected stack, surface the top 1–2
+   per category in `adoption-report.md`. Do **not** create or enable anything —
+   list them as opt-in suggestions.
+
+   | Repo signal | Suggest (report-only) |
+   |---|---|
+   | Popular libraries/SDKs (React, FastAPI, Prisma, …) | `context7` MCP for live docs |
+   | Frontend with UI/e2e needs | Playwright MCP |
+   | Postgres/MySQL/Supabase | a database MCP |
+   | Heavy GitHub / PR workflow | GitHub MCP + a `pr-check` skill |
+   | Prettier/ESLint/Ruff configured | PostToolUse format/lint hook |
+   | `.env`/lock files present | PreToolUse block-edit hook |
+   | Large codebase (>500 files), navigation-heavy | the `code-intel` plugin |
+   | Auth/payments/security code | a `security-reviewer` subagent |
+
+   For each suggestion give a one-line **why** tied to a concrete repo signal,
+   and the opt-in step. Note that the harness already ships generic hooks
+   (dangerous-command block, generated-edit block, bd-prime) and core subagents,
+   so only recommend what those don't already cover.
 7. If Codex is available and the work is `standard` or `deep`, ask Codex to
    challenge the major assumptions (via `/codex-critique` or the `codex-runner`
    skill) before finalizing. Best-effort: one retry on capacity error, then proceed and log the skip.

@@ -52,12 +52,9 @@ Two cleanly separated halves (deterministic transforms are code; judgement is th
 2. **Adapt** — the [`harness-adopt`](skills/harness-adopt/SKILL.md) skill scans the
    repo and replaces the overlay skeletons in `.claude/project/*` and
    `.codex/project/*` with real facts, then appends **report-only** automation
-   recommendations driven by a self-contained
-   [`automation-catalog`](skills/harness-adopt/references/automation-catalog.md)
-   (detection → MCP servers / hooks / subagents / language servers / custom
-   skills, distilled from Anthropic's `claude-automation-recommender` and made
-   *gap-aware* so it only suggests what the harness doesn't already ship). No
-   runtime dependency on that skill; nothing is auto-enabled.
+   recommendations (modeled on Anthropic's `claude-automation-recommender`:
+   detected stack → suggested MCP servers / hooks / subagents / the `code-intel`
+   plugin). Nothing is auto-enabled.
 
 `/mvp-plugin:update` re-runs only the deterministic half (refresh the reusable core,
 keep the filled overlay). `/mvp-plugin:doctor` runs [`scripts/doctor.sh`](scripts/doctor.sh).
