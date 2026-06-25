@@ -1,0 +1,32 @@
+{
+  "name": "mvp-plugin",
+  "owner": {
+    "name": "PavanMV"
+  },
+  "metadata": {
+    "description": "Repeatable agent coding harness for any repo (.claude + .codex + rules + hooks + beads), plus the bundled codex-adapter.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "mvp-plugin",
+      "source": "./",
+      "description": "Run /mvp-plugin:adopt to copy the self-contained agent harness into any repo: rules, skills, agents, hooks, CLAUDE.md/AGENTS.md, and beads tracking. /mvp-plugin:doctor verifies wiring; /mvp-plugin:update re-syncs the core.",
+      "version": "0.1.0",
+      "author": {
+        "name": "PavanMV",
+        "email": "mvpavan42@gmail.com"
+      }
+    },
+    {
+      "name": "codex-adapter",
+      "source": "./vendor/codex-adapter",
+      "description": "Call OpenAI Codex (gpt-5.x) from Claude Code via `codex exec`. Roles, free-form delegation, true concurrency, no broker or single-instance lock. Vendored here so installing the harness marketplace gives you Codex too.",
+      "version": "1.0.1",
+      "author": {
+        "name": "PavanMV",
+        "email": "mvpavan42@gmail.com"
+      }
+    }
+  ]
+}
