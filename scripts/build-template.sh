@@ -16,15 +16,29 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-REPO="$(git -C "$PLUGIN_DIR" rev-parse --show-toplevel)"
 TPL="$PLUGIN_DIR/template"
 OVR="$SCRIPT_DIR/overrides"
 
 note() { printf '  %s\n' "$1"; }
 die()  { printf 'build-template FAIL: %s\n' "$1" >&2; exit 1; }
 
+# Locate the SOURCE harness (the orchestrators checkout that owns .claude/.codex).
+# This plugin is its own git repo, so we can't use its git-toplevel — search up
+# from the plugin's parent for an ancestor that has the harness, or honour an
+# explicit HARNESS_SRC override. A standalone clone of just this plugin has no
+# source harness — that's fine; the shipped template/ is already built.
+REPO="${HARNESS_SRC:-}"
+if [ -z "$REPO" ]; then
+  d="$(dirname "$PLUGIN_DIR")"
+  while [ "$d" != "/" ]; do
+    if [ -d "$d/.claude/rules" ] && [ -d "$d/.codex" ] && [ "$d" != "$PLUGIN_DIR" ]; then REPO="$d"; break; fi
+    d="$(dirname "$d")"
+  done
+fi
+
 command -v rsync >/dev/null 2>&1 || die "rsync is required"
-[ -d "$REPO/.claude" ] || die "no .claude/ at repo root ($REPO) — run inside the orchestrators repo"
+[ -n "$REPO" ] && [ -d "$REPO/.claude/rules" ] || \
+  die "source harness not found — run from a checkout of the orchestrators harness, or set HARNESS_SRC=/path/to/harness"
 
 printf '#### Regenerating template/ from %s\n' "$REPO"
 mkdir -p "$TPL"
